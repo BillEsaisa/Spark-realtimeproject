@@ -20,9 +20,9 @@ object MyKafkaUtil {
   //kafka消费参数
   val kafkaparas :mutable.Map[String ,Object]=mutable.Map[String,Object](
     //kafka集群位置
-    ConsumerConfig.GROUP_ID_CONFIG -> PropertiesUtil(KAFKA_BROKER_LIST),
+    ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG-> PropertiesUtil(KAFKA_BROKER_LIST),
     //消费者组id
-    //ConsumerConfig.GROUP_ID_CONFIG->"bigdata0212",
+//    ConsumerConfig.GROUP_ID_CONFIG->"bigdata0212",
     //kv的反序列化
     ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringDeserializer",
     ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> "org.apache.kafka.common.serialization.StringDeserializer",
@@ -62,8 +62,8 @@ object MyKafkaUtil {
     kafkaconfigs.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG,"true")
 
       //kv的序列化
-    kafkaconfigs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringDeserializer")
-     kafkaconfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringDeserializer")
+    kafkaconfigs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringSerializer")
+     kafkaconfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,"org.apache.kafka.common.serialization.StringSerializer")
 
 
 

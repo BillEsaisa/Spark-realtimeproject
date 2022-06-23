@@ -28,18 +28,22 @@ object DauApp {
         val startuplog: StartUpLog = JSON.parseObject(record.value(), classOf[StartUpLog])
         //补充样例类中的字段
         val str: String = sdf.format(new Date(startuplog.ts))
-        val logDate: String = str.split(" ")(0)
-        val logHour: String = str.split(" ")(1)
+        startuplog.logDate=str.split(" ")(0)
+//        val logDate: String = str.split(" ")(0)
+//        val logHour: String = str.split(" ")(1)
+        startuplog.logHour=str.split(" ")(1)
         startuplog
       })
       startuplogs
     })
 
+//    StartuplogDstream.print()
+
     //将StartuplogDstream进行缓存，后续多次使用
     StartuplogDstream.cache()
 
     //进行批次间的去重操作（日活需求）
-    val DstreamFromrddtordd: DStream[StartUpLog] = DauHandle.Filterbyredis1(StartuplogDstream)
+    val DstreamFromrddtordd: DStream[StartUpLog] = DauHandle.Filterbyredis2(StartuplogDstream)
 
 
     //进行批次内去重
@@ -51,9 +55,11 @@ object DauApp {
     //将经过批次间去重和批次内去重的数据存放在Redis中，方便下一个批次的批次间去重使用
     DauHandle.AstoRedis(DstreamFromalonerdd)
 
+    DstreamFromalonerdd.print()
+
     //将数据保存到Hbase(Phoenix)
     val config= HBaseConfiguration.create()
-    DstreamFromrddtordd.foreachRDD(rdd=>{
+    DstreamFromalonerdd.foreachRDD(rdd=>{
       rdd.saveToPhoenix(
         "GMALL_0212_DAU",
         Seq[String]("MID", "UID", "APPID", "AREA","OS", "CH", "TYPE", "VS", "LOGDATE", "LOGHOUR", "TS"),

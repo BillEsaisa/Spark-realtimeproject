@@ -59,7 +59,7 @@ object DauHandle {
       //建立Jedislianjie
       val jedis = new Jedis("hadoop102", 6379)
       //获取redis 中的mid集合
-      val mids: util.Set[String] = jedis.smembers("Dau" + str)
+      val mids: util.Set[String] = jedis.smembers("Dau:" + str)
       //广播mids到excutor端
       val bcmids: Broadcast[util.Set[String]] = sc.sparkContext.broadcast(mids)
       //在excutor端进行去重
